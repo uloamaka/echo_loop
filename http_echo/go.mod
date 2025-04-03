@@ -1,5 +1,5 @@
-module echo_loop/rpc_echo
+module echo_loop/http_echo
 
-go 1.23.4
+go 1.21.5
 
 require github.com/joho/godotenv v1.5.1 // indirect

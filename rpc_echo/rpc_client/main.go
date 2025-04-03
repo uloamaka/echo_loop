@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"github.com/joho/godotenv"
 )
 
 type RPCRequest struct {
@@ -23,9 +24,27 @@ type RPCResponse struct {
 func main() {
 	tlsConfig := LoadClientTLSConfig()
 
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v, using default port 8443", err)
+	}
+
+	host := os.Getenv("RPC_HOST")
+    if host == "" {
+        host = "localhost"
+    }
+
+    port := os.Getenv("RPC_PORT")
+    if port == "" {
+        port = "8443"
+    }
+    
+    address := fmt.Sprintf("%s:%s", host, port)
+
+
 	// Send an RPS request every 30 seconds.
 	for {
-		conn, err := tls.Dial("tcp", "localhost:8443", tlsConfig)
+		conn, err := tls.Dial("tcp", address, tlsConfig)
 		if err != nil {
 			log.Printf("Dial error: %v", err)
 		} else {
@@ -42,9 +61,9 @@ func main() {
 
 			var res RPCResponse
 			if err := decoder.Decode(&res); err != nil {
-				log.Printf("DEcode error: %v", err)
+				log.Printf("Decode error: %v", err)
 			} else {
-				fmt.Printf("Rpc Response: %+v\n", res)
+				fmt.Printf("RPC Response: %+v\n", res)
 			}
 			conn.Close()
 		}

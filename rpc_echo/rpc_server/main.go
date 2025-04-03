@@ -4,9 +4,12 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type RPCRequest struct {
@@ -23,11 +26,22 @@ func main() {
 	// Load TLS configuration
 	tlsConfig := LoadServerTLSConfig()
 
-	ln, err := tls.Listen("tcp", ":8443", tlsConfig)
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v, using default port 8443", err)
+	}
+
+    port := os.Getenv("RPC_PORT")
+    if port == "" {
+        port = "8443"
+    }
+	address := fmt.Sprintf(":%s", port)
+
+	ln, err := tls.Listen("tcp", address, tlsConfig)
 	if err != nil {
 		log.Fatalf("Falled to listen: %v", err)
 	}
-	log.Println("🔐 mTLS Server running on port 8443 (mTLS enabled)")
+	log.Printf("🔐 mTLS Server running on port:%s (mTLS enabled)", port)
 
 	for {
 		conn, err := ln.Accept()
@@ -63,7 +77,6 @@ func handleConnection(conn net.Conn) {
 
 	if err := encoder.Encode(res); err != nil {
 		log.Printf("Encode error: %v", err)
-		return
 	}
 }
 

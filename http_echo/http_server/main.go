@@ -3,10 +3,13 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"os"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -23,14 +26,24 @@ func StartServer() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", HelloHandler)
 
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v, using default port 8443", err)
+	}
+
+    port := os.Getenv("HTTP_PORT")
+    if port == "" {
+        port = "8443"
+    }
+
 	server := &http.Server{
-		Addr:    ":8443",
+		Addr:    ":"+port,
 		Handler: mux,
 		TLSConfig: LoadServerTLSConfig(),
 	}
 
-	fmt.Println("🔐 mTLS Server running on https://localhost:8443")
-	err := server.ListenAndServeTLS("../certs/server.crt", "../certs/server.key")
+	fmt.Printf("🔐 mTLS Server running on https://localhost:%s", port)
+	err = server.ListenAndServeTLS("../certs/server.crt", "../certs/server.key")
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 	}

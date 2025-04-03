@@ -1,14 +1,16 @@
-package main 
+package main
 
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"os"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -23,8 +25,22 @@ func StartClient() {
 		TLSClientConfig: tlsConfig,
 	}
 
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		log.Printf("Error loading .env file: %v, using default port 8443", err)
+	}
+
+    port := os.Getenv("HTTP_PORT")
+    if port == "" {
+        port = "8443"
+    }
+	host := os.Getenv("HTTP_HOST")
+    if port == "" {
+        host = "localhost"
+    }
+
 	client := &http.Client{Transport: transport}
-	url := "https://localhost:8443/"
+	url := fmt.Sprintf("https://%s:%s", host, port)
 	
 	for {
 		res, err := client.Get(url)
