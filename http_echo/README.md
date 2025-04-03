@@ -18,11 +18,11 @@ openssl req -new -newkey rsa:4096 -nodes -keyout client.key -out client.csr -sub
 openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -days 30
 ```
 2. **Run the Server:**  
-   Open a terminal, navigate to the **rpc_server/** directory, and run:
+   Open a terminal, navigate to the **http_server/** directory, and run:
    ```bash
    go run main.go
    
 3. **Run the Client:**  
-   Open a terminal, navigate to the **rpc_client/** directory, and run:
+   Open a terminal, navigate to the **http_client/** directory, and run:
    ```bash
    go run main.go
