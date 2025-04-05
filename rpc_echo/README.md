@@ -4,7 +4,7 @@ Showing how the basic mTLS authentication process works in a rpc network.
 
 ## Image Representation of RPC AUTH FLOW
 
-![mTLS Authentication Flow](https://raw.githubusercontent.com/your_username/your_repo/main/images/mtls_flow.png)
+![mTLS Authentication Flow](./images/Screenshot_2-4-2025_6201_.jpeg)
 ## 1. Running with Docker
 Follow these steps to run the `rpc_server` and `rpc_client` using Docker with mTLS authentication.
 
