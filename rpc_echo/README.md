@@ -39,7 +39,7 @@ rm server.csr
 ```
 openssl req -new -newkey rsa:4096 -nodes -keyout client.key -out client.csr -subj "/CN=client"
 openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -days 30
-rm client.csr  # Clean up CSR
+rm client.csr  
 ```
 - **Return to the `rpc_echo/` directory:**
 ```
@@ -61,7 +61,7 @@ docker pull uloamaka/rpc_client:latest
 
 - **Run the Server:**
 ```
-docker run - --name rpc_server --network rpc_network --env-file $(pwd)/.env -v $(pwd)/../certs:/certs -e DOCKER_ENV=true uloamaka/rpc_server:latest
+docker run --name rpc_server --network rpc_network --env-file $(pwd)/.env -v $(pwd)/certs:/certs -e DOCKER_ENV=true uloamaka/rpc_server:latest
 ```
 Note: Run this in one terminal. Alternatively, run in the background with -d:
 ```
@@ -71,9 +71,18 @@ docker run --name rpc_server --network rpc_network --env-file .env -v $(pwd)/cer
 - **Run the Client:**
   In a second terminal (from rpc_echo/):
 ```
-docker run --name rpc_client --network rpc_network --env-file $(pwd)/.env -v $(pwd)/../certs:/certs -e DOCKER_ENV=true 
+docker run --name rpc_client --network rpc_network --env-file $(pwd)/.env -v $(pwd)/certs:/certs -e DOCKER_ENV=true 
   uloamaka/rpc_client:latest
 ```
+- **Server output:**
+```
+ 🔐 mTLS Server running on port:8443 (mTLS enabled)
+```
+- **Client output:**
+```
+RPC Response: {Result:Hello, Secure RPC Client! Error:}
+```
+confirms that authentication was succesful and communication can flow.
 
 ## 2. Run the server and client directly on your machine without Docker.
 - **Generate Certificates**
