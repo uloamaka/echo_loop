@@ -8,8 +8,6 @@ import (
 	"log"
 	"net"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type RPCRequest struct {
@@ -25,11 +23,6 @@ type RPCResponse struct {
 func main() {
 	// Load TLS configuration
 	tlsConfig := LoadServerTLSConfig()
-
-	err := godotenv.Load("../../.env")
-	if err != nil {
-		log.Printf("Error loading .env file: %v, using default port 8443", err)
-	}
 
     port := os.Getenv("RPC_PORT")
     if port == "" {
